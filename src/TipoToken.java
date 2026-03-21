@@ -3,11 +3,7 @@ public enum TipoToken {
     OpAritMult, OpAritDiv, OpAritSoma, OpAritSub,
     OpRelMenor, OpRelMenorIgual, OpRelMaior, OpRelMaiorIgual, OpRelIgual, OpRelDif,
     OpBoolE, OpBoolOu,
-    Delim,
-    Atrib,
+    Delim, Atrib,
     AbrePar, FechaPar,
-    Var,
-    NumInt,
-    NumReal,
-    Cadeia
+    Var, NumInt, NumReal, Cadeia
 }
