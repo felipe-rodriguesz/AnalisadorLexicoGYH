@@ -1,12 +1,16 @@
 import java.util.HashMap;
 
+// Implementa o automato do analisador lexico
 public class AnaliseLexica {
+    // Leitura de caracteres com controle de linha
     private LeitorArquivo ldat;
+    // Tabela de palavras reservadas da linguagem
     private HashMap<String, TipoToken> palavrasChave;
 
     public AnaliseLexica(String nome) {
         ldat = new LeitorArquivo(nome);
         palavrasChave = new HashMap<>();
+        // Mapeamento de palavras-chave para tipos de token
         palavrasChave.put("DEC", TipoToken.PCDec);
         palavrasChave.put("PROG", TipoToken.PCProg);
         palavrasChave.put("INT", TipoToken.PCInt);
@@ -23,11 +27,13 @@ public class AnaliseLexica {
         palavrasChave.put("OU", TipoToken.OpBoolOu);
     }
 
+    // Exibe erro lexico e encerra a execucao
     private void erroLexico(String msg) {
         System.err.println("Erro lexico na linha " + ldat.getLinhaAtual() + ": " + msg);
         System.exit(1);
     }
 
+    // Processa o automato e retorna o proximo token
     public Token proxToken() {
         Estado estadoAtual = Estado.Q0;
         StringBuilder lexema = new StringBuilder();
@@ -35,8 +41,10 @@ public class AnaliseLexica {
         while (true) {
             int caractere = ldat.lerProximoCaractere();
 
+            // Cada estado trata um grupo de lexemas
             switch (estadoAtual) {
                 case Q0:
+                    // Estado inicial: ignora espacos e identifica inicio de token
                     if (caractere == -1) {
                         return null;
                     }
@@ -100,6 +108,7 @@ public class AnaliseLexica {
                     break;
 
                 case Q1:
+                    // Reconhece ':' ou ':='
                     if (caractere != -1 && (char) caractere == '=') {
                         return new Token(":=", TipoToken.Atrib);
                     } else {
@@ -110,6 +119,7 @@ public class AnaliseLexica {
                     }
 
                 case Q2:
+                    // Reconhece '<' ou '<='
                     if (caractere != -1 && (char) caractere == '=') {
                         return new Token("<=", TipoToken.OpRelMenorIgual);
                     } else {
@@ -120,6 +130,7 @@ public class AnaliseLexica {
                     }
 
                 case Q3:
+                    // Reconhece '>' ou '>='
                     if (caractere != -1 && (char) caractere == '=') {
                         return new Token(">=", TipoToken.OpRelMaiorIgual);
                     } else {
@@ -130,6 +141,7 @@ public class AnaliseLexica {
                     }
 
                 case Q4:
+                    // Reconhece o operador '=='
                     if (caractere != -1 && (char) caractere == '=') {
                         return new Token("==", TipoToken.OpRelIgual);
                     } else {
@@ -138,6 +150,7 @@ public class AnaliseLexica {
                     break;
 
                 case Q5:
+                    // Reconhece o operador '!='
                     if (caractere != -1 && (char) caractere == '=') {
                         return new Token("!=", TipoToken.OpRelDif);
                     } else {
@@ -146,12 +159,14 @@ public class AnaliseLexica {
                     break;
 
                 case Q6:
+                    // Consome comentario de linha iniciado por '#'
                     if (caractere == -1 || (char) caractere == '\n') {
                         estadoAtual = Estado.Q0;
                     }
                     break;
 
                 case Q7:
+                    // Le cadeia entre aspas
                     if (caractere == -1) {
                         erroLexico("cadeia de caracteres nao fechada");
                     } else if ((char) caractere == '"') {
@@ -162,6 +177,7 @@ public class AnaliseLexica {
                     break;
 
                 case Q8:
+                    // Le identificadores em minusculo
                     if (caractere != -1) {
                         char ch = (char) caractere;
                         if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) {
@@ -176,6 +192,7 @@ public class AnaliseLexica {
                     break;
 
                 case Q9:
+                    // Le palavras-chave em maiusculo
                     if (caractere != -1) {
                         char ch = (char) caractere;
                         if (ch >= 'A' && ch <= 'Z') {
@@ -202,6 +219,7 @@ public class AnaliseLexica {
                     break;
 
                 case Q10:
+                    // Le numero inteiro ou inicio de real
                     if (caractere != -1) {
                         char ch = (char) caractere;
                         if (ch >= '0' && ch <= '9') {
@@ -219,6 +237,7 @@ public class AnaliseLexica {
                     break;
 
                 case Q11:
+                    // Garante digito apos ponto decimal
                     if (caractere != -1) {
                         char ch = (char) caractere;
                         if (ch >= '0' && ch <= '9') {
@@ -233,6 +252,7 @@ public class AnaliseLexica {
                     break;
 
                 case Q12:
+                    // Finaliza leitura de numero real
                     if (caractere != -1) {
                         char ch = (char) caractere;
                         if (ch >= '0' && ch <= '9') {

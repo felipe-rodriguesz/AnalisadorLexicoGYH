@@ -3,9 +3,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+// Encapsula a leitura de caracteres do arquivo fonte
 public class LeitorArquivo {
+    // Fluxo do arquivo de entrada
     private InputStream is;
+    // Buffer para devolver um caractere lido
     private int pushback = -1;
+    // Linha atual para mensagens de erro
     private int linhaAtual = 1;
 
     public LeitorArquivo(String nome) {
@@ -17,6 +21,7 @@ public class LeitorArquivo {
         }
     }
 
+    // Le o proximo caractere considerando pushback
     public int lerProximoCaractere() {
         int c;
 
@@ -38,6 +43,7 @@ public class LeitorArquivo {
         return c;
     }
 
+    // Devolve um caractere para ser relido
     public void devolverCaractere(int c) {
         if (c == '\n') {
             linhaAtual--;
@@ -45,6 +51,7 @@ public class LeitorArquivo {
         pushback = c;
     }
 
+    // Retorna a linha atual da leitura
     public int getLinhaAtual() {
         return linhaAtual;
     }
