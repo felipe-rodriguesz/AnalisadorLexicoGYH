@@ -15,12 +15,14 @@ public class AnalisadorSintatico {
 
     // Método auxiliar para avançar na lista de tokens
     private void avancar() {
-        pos++;
-        if (pos < tokens.size()) {
-            tokenAtual = tokens.get(pos);
-        }
+    pos++;
+    if (pos < tokens.size()) {
+        tokenAtual = tokens.get(pos);
+    } else {
+        // Isso evita o erro de "IndexOutOfBounds" e o loop infinito no final
+        tokenAtual = new Token("$", null); 
     }
-
+}
     // Verifica se o token atual é do tipo esperado
     private void match(TipoToken tipo) {
         if (tokenAtual.padrao == tipo) {
@@ -175,15 +177,16 @@ public class AnalisadorSintatico {
     }
 
     private void comandoSaida() {
-        match(TipoToken.PCImprimir);
+    match(TipoToken.PCImprimir);
+    if (tokenAtual.padrao == TipoToken.Var || tokenAtual.padrao == TipoToken.Cadeia) {
         String valor = tokenAtual.lexema;
-        if (tokenAtual.padrao == TipoToken.Var || tokenAtual.padrao == TipoToken.Cadeia) {
-            avancar();
-            gerador.emitir("IMPRIMIR", null, null, valor);
-        } else {
-            throw new RuntimeException("Erro: IMPRIMIR espera variável ou cadeia.");
-        }
+        gerador.emitir("IMPRIMIR", null, null, valor);
+        
+        avancar(); // <--- ESSENCIAL: Consome a Var/Cadeia
+    } else {
+        throw new RuntimeException("Erro: IMPRIMIR espera variável ou cadeia.");
     }
+}
 
     private void comandoCondicao() {
         match(TipoToken.PCSe);

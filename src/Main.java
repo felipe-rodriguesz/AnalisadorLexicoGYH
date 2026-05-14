@@ -4,7 +4,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         // Inicia análise léxica
-        AnaliseLexica lex = new AnaliseLexica("src/_Testes_Sintáticos/programa2.gyh");
+        AnaliseLexica lex = new AnaliseLexica("src/_Testes_Sintáticos/programa19.gyh");
         List<Token> listaTokens = new ArrayList<>();
         
         // Lê todos os tokens e guarda na lista
